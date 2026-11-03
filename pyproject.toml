@@ -1,0 +1,77 @@
+[project]
+name = "odsbox-cli"
+version = "0.1.0"
+description = "Interactive JAQuel and pandas inspection of ASAM ODS servers"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.14"
+dependencies = [
+    "odsbox[oidc]>=1.10.1",
+    "pandas>=2.2",
+    "keyring>=25",
+    "jsonschema>=4",
+    "prompt-toolkit>=3.0"
+]
+
+[project.optional-dependencies]
+plot = ["matplotlib>=3.9", "numpy>=2"]
+
+[project.scripts]
+odsbox-cli = "odsbox_cli.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.9,<0.12"]
+build-backend = "uv_build"
+
+[dependency-groups]
+executable = ["pyinstaller>=6.16,<7"]
+dev = [
+    "ruff>=0.15",
+    "mypy>=1.19",
+    "pandas-stubs>=2.2",
+    "types-jsonschema>=4",
+    "pytest>=9",
+    "pytest-cov>=7",
+    "python-semantic-release>=10,<11",
+    "pip-audit>=2.9",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.mypy]
+strict = true
+files = ["src", "scripts", "tests"]
+mypy_path = "$MYPY_CONFIG_FILE_DIR/src"
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+disallow_untyped_calls = false
+check_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-m 'not integration'"
+markers = ["integration: explicit read-only live server tests (requires ODSBOX_TEST_* settings)"]
+
+[tool.coverage.run]
+source = ["odsbox_cli"]
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+tag_format = "v{version}"
+build_command = "uv run --no-sync python scripts/release.py build"
+
+[tool.semantic_release.branches.main]
+match = "main"
+prerelease = false
