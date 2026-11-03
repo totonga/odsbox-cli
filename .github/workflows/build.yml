@@ -30,7 +30,7 @@ jobs:
       - uses: astral-sh/setup-uv@v8.2.0
       - run: uv sync --locked --all-groups --extra plot
       - run: uv run --locked pytest --cov=odsbox_cli --cov-report=term-missing --cov-report=xml --cov-fail-under=85
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: coverage-${{ matrix.os }}
           path: coverage.xml
@@ -46,7 +46,7 @@ jobs:
       - run: uv sync --locked --all-groups
       - run: uv build --no-sources
       - run: uv run --locked python scripts/package_smoke.py --dist dist
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: distributions-${{ matrix.os }}
           path: dist/*
